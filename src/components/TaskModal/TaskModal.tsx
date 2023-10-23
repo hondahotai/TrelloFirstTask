@@ -8,6 +8,8 @@ type TaskModalProps = {
   deleteTask: (index: number) => void;
   setCommentsCount: (index: number, count: number) => void;
   updateTaskTitle: (index: number, newTitle: string) => void;
+  columnId: number;
+  handleCloseModal: () => void;
 };
 
 const TaskModal = ({
@@ -17,8 +19,10 @@ const TaskModal = ({
   deleteTask,
   setCommentsCount,
   updateTaskTitle,
+  columnId,
+  handleCloseModal,
 }: TaskModalProps) => {
-  const taskFromStorage = localStorage.getItem(title);
+  const taskFromStorage = localStorage.getItem(`column-${columnId}`);
   const tasksArray = taskFromStorage ? JSON.parse(taskFromStorage) : [];
   const taskIndex = tasksArray[index];
 
@@ -32,7 +36,7 @@ const TaskModal = ({
   const saveTaskTitleToLocalStorage = () => {
     const updatedTasks = [...tasksArray];
     updatedTasks[index] = tempTaskTitle;
-    localStorage.setItem(title, JSON.stringify(updatedTasks));
+    localStorage.setItem(`column-${columnId}`, JSON.stringify(updatedTasks));
     updateTaskTitle(index, tempTaskTitle);
     setEditingTaskTitle(false);
   };
@@ -58,7 +62,7 @@ const TaskModal = ({
 
   const saveDescriptionToLocalStorage = () => {
     setDescription(tempDescription);
-    localStorage.setItem(`description-${title}-${index}`, tempDescription);
+    localStorage.setItem(`description-${columnId}-${index}`, tempDescription);
     setEditing(false);
   };
 
@@ -69,11 +73,13 @@ const TaskModal = ({
 
   const handleDeleteDescription = () => {
     setDescription("");
-    localStorage.removeItem(`description-${title}-${index}`);
+    localStorage.removeItem(`description-${columnId}-${index}`);
   };
 
   const [comments, setComments] = useState<string[]>(() => {
-    const storedComments = localStorage.getItem(`comments-${title}-${index}`);
+    const storedComments = localStorage.getItem(
+      `comments-${columnId}-${index}`,
+    );
     return storedComments ? JSON.parse(storedComments) : [];
   });
   const [editingCommentIndex, setEditingCommentIndex] = useState<number | null>(
@@ -86,21 +92,23 @@ const TaskModal = ({
   };
 
   const addComment = () => {
-    setComments([...comments, tempComment]);
-    setTempComment("");
+    if (tempComment.trim() !== "") {
+      setComments([...comments, tempComment]);
+      setTempComment("");
+    }
   };
 
   const editComment = (idx: number) => {
     setEditingCommentIndex(idx);
-    setTempComment(comments[idx]);
+    setTempEditedComment(comments[idx]);
   };
 
   const saveEditedComment = () => {
     const updatedComments = [...comments];
-    updatedComments[editingCommentIndex!] = tempComment;
+    updatedComments[editingCommentIndex!] = tempEditedComment;
     setComments(updatedComments);
     setEditingCommentIndex(null);
-    setTempComment("");
+    setTempEditedComment("");
   };
 
   const deleteComment = (idx: number) => {
@@ -111,18 +119,20 @@ const TaskModal = ({
 
   useEffect(() => {
     localStorage.setItem(
-      `comments-${title}-${index}`,
+      `comments-${columnId}-${index}`,
       JSON.stringify(comments),
     );
-  }, [comments, title, index]);
+  }, [comments]);
 
   useEffect(() => {
     setCommentsCount(index, comments.length);
     localStorage.setItem(
-      `comments-${title}-${index}`,
+      `comments-${columnId}-${index}`,
       JSON.stringify(comments),
     );
-  }, [comments, title, index]);
+  }, [comments, columnId, index]);
+
+  const [tempEditedComment, setTempEditedComment] = useState<string>("");
 
   return (
     <div className="TaskModal">
@@ -176,8 +186,8 @@ const TaskModal = ({
                   <>
                     <input
                       type="text"
-                      value={tempComment}
-                      onChange={handleCommentChange}
+                      value={tempEditedComment}
+                      onChange={(e) => setTempEditedComment(e.target.value)}
                     />
                     <button onClick={saveEditedComment}>Save</button>
                   </>
@@ -200,6 +210,9 @@ const TaskModal = ({
           <button onClick={addComment}>Add Comment</button>
         </div>
         <button onClick={() => deleteTask(index)}>delete card</button>
+        <button className="closeModalButton" onClick={handleCloseModal}>
+          X
+        </button>
       </div>
     </div>
   );

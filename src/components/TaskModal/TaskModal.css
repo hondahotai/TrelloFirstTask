@@ -19,6 +19,7 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
+    position: relative;
 }
 
 .ColumnName {
@@ -41,4 +42,14 @@
 .CommentTasks li {
     display: flex;
     gap: 10px;
+}
+
+.closeModalButton {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
 }

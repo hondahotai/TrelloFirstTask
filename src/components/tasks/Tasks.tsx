@@ -4,9 +4,10 @@ import React, { useState, useEffect } from "react";
 
 type TitleColumns = {
   title: string;
+  columnId: number;
 };
 
-const Tasks = ({ title }: TitleColumns) => {
+const Tasks = ({ columnId, title }: TitleColumns) => {
   const [tasks, setTasks] = useState<string[]>([]);
   const [newTask, setNewTask] = useState("");
 
@@ -51,20 +52,31 @@ const Tasks = ({ title }: TitleColumns) => {
 
   useEffect(() => {
     const loadTasksFromLocalStorage = () => {
-      const storedTasks = localStorage.getItem(title);
+      const storedTasks = localStorage.getItem(`column-${columnId}`);
       if (storedTasks) {
         setTasks(JSON.parse(storedTasks));
       }
+
+      const loadedCommentsCounts = storedTasks
+        ? JSON.parse(storedTasks).map((task: string, index: number) => {
+            const storedComments = localStorage.getItem(
+              `comments-${columnId}-${index}`,
+            );
+            return storedComments ? JSON.parse(storedComments).length : 0;
+          })
+        : [];
+
+      setCommentsCounts(loadedCommentsCounts);
     };
 
     loadTasksFromLocalStorage();
-  }, []);
+  }, [columnId]);
 
   const addTask = () => {
     if (newTask) {
       setTasks([...tasks, newTask]);
       setNewTask("");
-      addLocalStorage(title, newTask);
+      addLocalStorage(`column-${columnId}`, newTask);
     }
   };
 
@@ -72,10 +84,10 @@ const Tasks = ({ title }: TitleColumns) => {
     const updatedTasks = [...tasks];
     updatedTasks.splice(index, 1);
     setTasks(updatedTasks);
-    localStorage.setItem(title, JSON.stringify(updatedTasks));
+    localStorage.setItem(`column-${columnId}`, JSON.stringify(updatedTasks));
 
-    localStorage.removeItem(`description-${title}-${index}`);
-    localStorage.removeItem(`comments-${title}-${index}`);
+    localStorage.removeItem(`description-${columnId}-${index}`);
+    localStorage.removeItem(`comments-${columnId}-${index}`);
     handleCloseModal();
   };
 
@@ -105,6 +117,8 @@ const Tasks = ({ title }: TitleColumns) => {
                 deleteTask={deleteTask}
                 setCommentsCount={setCommentsCount}
                 updateTaskTitle={updateTaskTitle}
+                columnId={columnId}
+                handleCloseModal={handleCloseModal}
               />
             )}
             {task}

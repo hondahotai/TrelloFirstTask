@@ -11,7 +11,16 @@ interface ColumnProps {
 
 const Column = ({ column }: ColumnProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [currentTitle, setCurrentTitle] = useState(column.title);
+  const storedTitle = localStorage.getItem(`column-title-${column.id}`);
+
+  const [currentTitle, setCurrentTitle] = useState(storedTitle || column.title);
+
+  const handleTitleChange = (e: any) => {
+    const newTitle = e.target.value;
+    setCurrentTitle(newTitle);
+
+    localStorage.setItem(`column-title-${column.id}`, newTitle);
+  };
 
   return (
     <div className="column">
@@ -21,7 +30,7 @@ const Column = ({ column }: ColumnProps) => {
             className="inputHeader"
             type="text"
             value={currentTitle}
-            onChange={(e) => setCurrentTitle(e.target.value)}
+            onChange={handleTitleChange}
             onBlur={() => setIsEditing(false)}
           />
         </div>
@@ -32,7 +41,7 @@ const Column = ({ column }: ColumnProps) => {
           </h1>
         </div>
       )}
-      <Tasks title={currentTitle} />
+      <Tasks columnId={column.id} title={currentTitle} />
     </div>
   );
 };
