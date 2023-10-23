@@ -210,7 +210,13 @@ const TaskModal = ({
           <button onClick={addComment}>Add Comment</button>
         </div>
         <button onClick={() => deleteTask(index)}>delete card</button>
-        <button className="closeModalButton" onClick={handleCloseModal}>
+        <button
+          className="closeModalButton"
+          onClick={(e) => {
+            handleCloseModal();
+            e.stopPropagation();
+          }}
+        >
           X
         </button>
       </div>
