@@ -53,8 +53,8 @@ const TaskModal = ({
     return descFromStorage || "";
   });
 
-  const [editing, setEditing] = useState<boolean>(false);
-  const [tempDescription, setTempDescription] = useState<string>("");
+  const [editing, setEditing] = useState(false);
+  const [tempDescription, setTempDescription] = useState("");
 
   const handleDescriptionChange = (e: any) => {
     setTempDescription(e.target.value);
@@ -76,12 +76,14 @@ const TaskModal = ({
     localStorage.removeItem(`description-${columnId}-${index}`);
   };
 
-  const [comments, setComments] = useState<string[]>(() => {
+  const checkComments = (): string[] => {
     const storedComments = localStorage.getItem(
       `comments-${columnId}-${index}`,
     );
     return storedComments ? JSON.parse(storedComments) : [];
-  });
+  };
+  const [comments, setComments] = useState<string[]>(checkComments);
+
   const [editingCommentIndex, setEditingCommentIndex] = useState<number | null>(
     null,
   );

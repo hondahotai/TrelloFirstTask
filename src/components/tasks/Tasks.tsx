@@ -89,6 +89,19 @@ const Tasks = ({ columnId, title }: TitleColumns) => {
     localStorage.removeItem(`description-${columnId}-${index}`);
     localStorage.removeItem(`comments-${columnId}-${index}`);
     handleCloseModal();
+
+    for (let i = index + 1; i < tasks.length; i++) {
+      const nextComments = localStorage.getItem(`comments-${columnId}-${i}`);
+      localStorage.setItem(
+        `comments-${columnId}-${i - 1}`,
+        nextComments || "[]",
+      );
+      localStorage.removeItem(`comments-${columnId}-${i}`);
+    }
+
+    const updatedCounts = [...commentsCounts];
+    updatedCounts.splice(index, 1);
+    setCommentsCounts(updatedCounts);
   };
 
   const updateTaskTitle = (index: number, newTitle: string) => {

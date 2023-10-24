@@ -3,21 +3,19 @@ import "./Popup.css";
 
 interface IPopup {
   active: boolean;
-  setActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Popup = ({ active, setActive }: IPopup) => {
+const Popup = ({ active }: IPopup) => {
   const [name, setName] = useState("");
 
   const handleSubmit = () => {
     localStorage.setItem("name", name);
-    setActive(false);
   };
 
   return (
     <div className={`Popup ${active ? "PopupActive" : ""}`}>
       <div className="PopupContent">
-        Введите имя:{""}
+        Введите имя:
         <input
           className="PopupInput"
           type="text"
