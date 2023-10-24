@@ -17,10 +17,14 @@ const App = () => {
     }
   }, []);
 
+  const closePopup = () => {
+    setPopupActive(false);
+  };
+
   return (
     <div>
       <Board />
-      <Popup active={popupActive} />
+      <Popup active={popupActive} onClose={closePopup} />
     </div>
   );
 };
