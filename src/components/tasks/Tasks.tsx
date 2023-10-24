@@ -88,7 +88,6 @@ const Tasks = ({ columnId, title }: TitleColumns) => {
 
     localStorage.removeItem(`description-${columnId}-${index}`);
     localStorage.removeItem(`comments-${columnId}-${index}`);
-    handleCloseModal();
 
     for (let i = index + 1; i < tasks.length; i++) {
       const nextComments = localStorage.getItem(`comments-${columnId}-${i}`);
@@ -102,6 +101,7 @@ const Tasks = ({ columnId, title }: TitleColumns) => {
     const updatedCounts = [...commentsCounts];
     updatedCounts.splice(index, 1);
     setCommentsCounts(updatedCounts);
+    handleCloseModal();
   };
 
   const updateTaskTitle = (index: number, newTitle: string) => {

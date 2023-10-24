@@ -211,7 +211,15 @@ const TaskModal = ({
           />
           <button onClick={addComment}>Add Comment</button>
         </div>
-        <button onClick={() => deleteTask(index)}>delete card</button>
+        <button
+          onClick={(e) => {
+            deleteTask(index);
+            handleCloseModal();
+            e.stopPropagation();
+          }}
+        >
+          delete card
+        </button>
         <button
           className="closeModalButton"
           onClick={(e) => {
