@@ -96,6 +96,19 @@ const Tasks = ({ columnId, title }: TitleColumns) => {
         nextComments || "[]",
       );
       localStorage.removeItem(`comments-${columnId}-${i}`);
+
+      for (let i = index + 1; i < tasks.length; i++) {
+        const nextDescription = localStorage.getItem(
+          `description-${columnId}-${i}`,
+        );
+        if (nextDescription) {
+          localStorage.setItem(
+            `description-${columnId}-${i - 1}`,
+            nextDescription,
+          );
+          localStorage.removeItem(`description-${columnId}-${i}`);
+        }
+      }
     }
 
     const updatedCounts = [...commentsCounts];
