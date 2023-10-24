@@ -48,7 +48,7 @@ const TaskModal = ({
 
   const [description, setDescription] = useState<string>(() => {
     const descFromStorage = localStorage.getItem(
-      `description-${title}-${index}`,
+      `description-${columnId}-${index}`,
     );
     return descFromStorage || "";
   });
